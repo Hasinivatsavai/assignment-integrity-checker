@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 # ============================================================
-# PAGE SETTINGS
+# PAGE CONFIGURATION
 # ============================================================
 
 st.set_page_config(
@@ -18,30 +18,27 @@ st.set_page_config(
 
 
 # ============================================================
-# CRC-32 FUNCTION
+# APPLICATION FUNCTIONS
 # ============================================================
 
 def calculate_crc(data):
     """
-    Calculate CRC-32 checksum for the uploaded file.
+    Generate CRC-32 checksum for file data.
     """
     return f"{zlib.crc32(data) & 0xffffffff:08X}"
 
 
-# ============================================================
-# SUBMISSION ID
-# ============================================================
-
 def create_submission_id():
-    number = len(st.session_state.submissions) + 1
-    return f"SUB-{number:03d}"
+    """
+    Create a simple submission ID.
+    """
+    return f"SUB-{len(st.session_state.submissions) + 1:03d}"
 
 
-# ============================================================
-# CSV REPORT
-# ============================================================
-
-def generate_csv():
+def generate_report():
+    """
+    Generate CSV verification report.
+    """
 
     output = io.StringIO()
 
@@ -54,9 +51,9 @@ def generate_csv():
         "Course",
         "Assignment",
         "File Name",
-        "Reference CRC-32",
+        "Original CRC-32",
         "Received CRC-32",
-        "Status",
+        "Integrity Status",
         "Submitted At"
     ])
 
@@ -69,13 +66,20 @@ def generate_csv():
             submission["course"],
             submission["assignment"],
             submission["file_name"],
-            submission["reference_crc"],
+            submission["original_crc"],
             submission["received_crc"],
             submission["status"],
             submission["submitted_at"]
         ])
 
     return output.getvalue().encode("utf-8")
+
+
+def reset_student_form():
+    """
+    Reset student submission state.
+    """
+    st.session_state.student_submitted = False
 
 
 # ============================================================
@@ -100,14 +104,16 @@ with st.sidebar:
 
     st.title("🛡️ Integrity Hub")
 
-    st.caption("Assignment submission & verification")
+    st.caption(
+        "Secure assignment submission & integrity verification"
+    )
 
     st.divider()
 
-    st.subheader("Choose Portal")
+    st.subheader("Portal")
 
     role = st.radio(
-        "Portal",
+        "Select portal",
         [
             "🎓 Student",
             "👨‍🏫 Lecturer"
@@ -117,18 +123,27 @@ with st.sidebar:
 
     st.divider()
 
-    st.subheader("CRC-32")
+    st.subheader("How it works")
 
-    st.write(
-        "A checksum used to detect whether "
-        "file data has changed or become corrupted."
-    )
+    if role == "🎓 Student":
+
+        st.write(
+            "Submit your assignment. "
+            "The system automatically generates "
+            "an original CRC-32 reference."
+        )
+
+    else:
+
+        st.write(
+            "Open student submissions and compare "
+            "the original CRC-32 with the received file."
+        )
 
     st.divider()
 
     st.caption(
-        "Prototype\n\n"
-        "CRC-32 Assignment Integrity System"
+        "CRC-32 Based Assignment Integrity System"
     )
 
 
@@ -145,15 +160,15 @@ if role == "🎓 Student":
     st.title("🛡️ Assignment Integrity Hub")
 
     st.write(
-        "Submit your assignment normally. "
-        "The system automatically creates a CRC-32 "
-        "integrity reference for your submission."
+        "Submit your assignment securely. "
+        "Your file's integrity reference is generated "
+        "automatically in the background."
     )
 
     st.divider()
 
     # --------------------------------------------------------
-    # SUBMISSION SUCCESS
+    # SUCCESS SCREEN
     # --------------------------------------------------------
 
     if st.session_state.student_submitted:
@@ -164,46 +179,112 @@ if role == "🎓 Student":
             "Assignment submitted successfully!"
         )
 
-        st.subheader("Submission Confirmed")
+        st.header("Submission Confirmed")
+
+        st.write(
+            "Your assignment has been sent to the lecturer."
+        )
+
+        st.write("")
+
+        # Summary
 
         col1, col2, col3 = st.columns(3)
 
         with col1:
+
             st.metric(
                 "Submission ID",
                 latest["id"]
             )
 
         with col2:
+
             st.metric(
                 "Status",
                 "Submitted"
             )
 
         with col3:
+
             st.metric(
-                "Integrity Method",
-                "CRC-32"
+                "Integrity",
+                "Protected"
             )
 
+        st.write("")
+
+        # Submission details
+
+        with st.container(border=True):
+
+            st.subheader("Submission Details")
+
+            st.write(
+                f"**Student:** {latest['student_name']}"
+            )
+
+            st.write(
+                f"**Student ID:** {latest['student_id']}"
+            )
+
+            st.write(
+                f"**Course:** {latest['course']}"
+            )
+
+            st.write(
+                f"**Assignment:** {latest['assignment']}"
+            )
+
+            st.write(
+                f"**File:** {latest['file_name']}"
+            )
+
+            st.write(
+                f"**Submitted:** {latest['submitted_at']}"
+            )
+
+        st.write("")
+
+        # Original CRC
+
+        with st.expander("🔐 View Original CRC-32"):
+
+            st.write(
+                "This is the CRC-32 generated from your "
+                "original submitted assignment."
+            )
+
+            st.code(
+                latest["original_crc"],
+                language="text"
+            )
+
+            st.caption(
+                "The lecturer will use this reference "
+                "during the integrity check."
+            )
+
+        st.write("")
+
         st.info(
-            "Your assignment has been sent to the lecturer. "
-            "The system has stored its CRC-32 reference."
+            "You don't need to perform any CRC verification. "
+            "The integrity check is handled by the lecturer."
         )
 
-        st.divider()
+        st.write("")
 
         if st.button(
-            "Submit Another Assignment",
+            "＋ Submit Another Assignment",
             use_container_width=True
         ):
 
-            st.session_state.student_submitted = False
+            reset_student_form()
 
             st.rerun()
 
     # --------------------------------------------------------
-    # SUBMISSION FORM
+    # STUDENT SUBMISSION FORM
     # --------------------------------------------------------
 
     else:
@@ -211,68 +292,91 @@ if role == "🎓 Student":
         st.header("Submit Assignment")
 
         st.write(
-            "Enter your details and upload your completed assignment."
-        )
-
-        st.subheader("Student Details")
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-
-            student_name = st.text_input(
-                "Student Name",
-                placeholder="Enter your name"
-            )
-
-        with col2:
-
-            student_id = st.text_input(
-                "Student ID",
-                placeholder="Enter your student ID"
-            )
-
-        col3, col4 = st.columns(2)
-
-        with col3:
-
-            course = st.text_input(
-                "Course",
-                placeholder="Example: Database Management Systems"
-            )
-
-        with col4:
-
-            assignment = st.text_input(
-                "Assignment",
-                placeholder="Example: Assignment 03"
-            )
-
-        st.subheader("Assignment File")
-
-        uploaded_file = st.file_uploader(
-            "Upload your assignment",
-            type=[
-                "pdf",
-                "docx",
-                "txt"
-            ],
-            help="Supported formats: PDF, DOCX and TXT"
+            "Fill in your details, upload your assignment, "
+            "and submit it to the lecturer."
         )
 
         st.write("")
 
-        submit_button = st.button(
-            "📤 Submit Assignment",
-            type="primary",
-            use_container_width=True
-        )
+        # ----------------------------------------------------
+        # STUDENT DETAILS
+        # ----------------------------------------------------
+
+        with st.container(border=True):
+
+            st.subheader("Student Details")
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                student_name = st.text_input(
+                    "Student Name",
+                    placeholder="Enter your full name"
+                )
+
+            with col2:
+
+                student_id = st.text_input(
+                    "Student ID",
+                    placeholder="Enter your student ID"
+                )
+
+            col3, col4 = st.columns(2)
+
+            with col3:
+
+                course = st.text_input(
+                    "Course",
+                    placeholder="Example: Database Management Systems"
+                )
+
+            with col4:
+
+                assignment = st.text_input(
+                    "Assignment",
+                    placeholder="Example: Assignment 03"
+                )
+
+        st.write("")
+
+        # ----------------------------------------------------
+        # FILE UPLOAD
+        # ----------------------------------------------------
+
+        with st.container(border=True):
+
+            st.subheader("Assignment File")
+
+            st.write(
+                "Upload the completed assignment you want to submit."
+            )
+
+            uploaded_file = st.file_uploader(
+                "Choose your assignment",
+                type=[
+                    "pdf",
+                    "docx",
+                    "txt"
+                ],
+                help="Supported formats: PDF, DOCX and TXT"
+            )
+
+        st.write("")
 
         # ----------------------------------------------------
         # SUBMIT
         # ----------------------------------------------------
 
-        if submit_button:
+        submit = st.button(
+            "📤 Submit Assignment",
+            type="primary",
+            use_container_width=True
+        )
+
+        if submit:
+
+            # Validate details
 
             if not student_name.strip():
 
@@ -301,26 +405,33 @@ if role == "🎓 Student":
             elif uploaded_file is None:
 
                 st.error(
-                    "Please upload your assignment."
+                    "Please upload your assignment file."
                 )
 
             else:
 
-                # Get file bytes
+                # ------------------------------------------------
+                # READ FILE
+                # ------------------------------------------------
 
                 file_data = uploaded_file.getvalue()
 
-                # Generate CRC-32
+                # ------------------------------------------------
+                # GENERATE ORIGINAL CRC
+                # ------------------------------------------------
 
-                reference_crc = calculate_crc(
+                original_crc = calculate_crc(
                     file_data
                 )
 
-                # Create submission
+                # ------------------------------------------------
+                # CREATE SUBMISSION
+                # ------------------------------------------------
 
                 submission = {
 
-                    "id": create_submission_id(),
+                    "id":
+                        create_submission_id(),
 
                     "student_name":
                         student_name.strip(),
@@ -337,14 +448,28 @@ if role == "🎓 Student":
                     "file_name":
                         uploaded_file.name,
 
-                    "file_data":
+                    # Original submitted file
+
+                    "original_file_data":
                         file_data,
 
-                    "reference_crc":
-                        reference_crc,
+                    # File currently received
+                    # by lecturer
+
+                    "received_file_data":
+                        file_data,
+
+                    # CRC generated at submission
+
+                    "original_crc":
+                        original_crc,
+
+                    # Lecturer calculates this later
 
                     "received_crc":
                         "",
+
+                    # Initial state
 
                     "status":
                         "PENDING",
@@ -366,12 +491,12 @@ if role == "🎓 Student":
                 st.rerun()
 
         # ----------------------------------------------------
-        # HOW IT WORKS
+        # SIMPLE EXPLANATION
         # ----------------------------------------------------
 
         st.divider()
 
-        st.header("How it works")
+        st.header("What happens after submission?")
 
         col1, col2, col3 = st.columns(3)
 
@@ -380,26 +505,25 @@ if role == "🎓 Student":
             st.subheader("1️⃣ Submit")
 
             st.write(
-                "Upload your assignment and "
-                "submit it to the lecturer."
+                "Upload your assignment and submit it."
             )
 
         with col2:
 
-            st.subheader("2️⃣ Protect")
+            st.subheader("2️⃣ Reference Created")
 
             st.write(
                 "The system automatically generates "
-                "a CRC-32 reference for the file."
+                "an original CRC-32."
             )
 
         with col3:
 
-            st.subheader("3️⃣ Verify")
+            st.subheader("3️⃣ Lecturer Checks")
 
             st.write(
-                "The lecturer checks whether "
-                "the assignment data has changed."
+                "The lecturer verifies the received "
+                "assignment using the CRC reference."
             )
 
 
@@ -413,44 +537,47 @@ else:
     # HEADER
     # --------------------------------------------------------
 
-    st.title("📥 Assignment Inbox")
+    st.title("📥 Lecturer Assignment Inbox")
 
     st.write(
-        "Student submissions appear here automatically. "
-        "Open a submission to verify its file integrity."
+        "Review student submissions and verify "
+        "their file integrity using CRC-32."
     )
 
     st.divider()
 
     # --------------------------------------------------------
-    # SUMMARY
+    # DASHBOARD NUMBERS
     # --------------------------------------------------------
 
     total = len(
         st.session_state.submissions
     )
 
-    pending = len([
-        s for s in st.session_state.submissions
+    pending = sum(
+        1
+        for s in st.session_state.submissions
         if s["status"] == "PENDING"
-    ])
+    )
 
-    verified = len([
-        s for s in st.session_state.submissions
+    verified = sum(
+        1
+        for s in st.session_state.submissions
         if s["status"] == "VERIFIED"
-    ])
+    )
 
-    failed = len([
-        s for s in st.session_state.submissions
+    failed = sum(
+        1
+        for s in st.session_state.submissions
         if s["status"] == "FAILED"
-    ])
+    )
 
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
 
         st.metric(
-            "Total",
+            "Total Submissions",
             total
         )
 
@@ -475,7 +602,7 @@ else:
             failed
         )
 
-    st.divider()
+    st.write("")
 
     # ========================================================
     # SELECTED SUBMISSION
@@ -499,112 +626,185 @@ else:
 
         if selected is not None:
 
-            st.header("Submission Details")
+            # ------------------------------------------------
+            # BACK
+            # ------------------------------------------------
+
+            if st.button("← Back to Inbox"):
+
+                st.session_state.selected_submission = None
+
+                st.rerun()
+
+            st.divider()
+
+            # ------------------------------------------------
+            # SUBMISSION HEADER
+            # ------------------------------------------------
+
+            st.header(
+                selected["assignment"]
+            )
 
             st.caption(
                 f"Submission ID: {selected['id']}"
             )
 
             # ------------------------------------------------
-            # STUDENT INFORMATION
+            # DETAILS
             # ------------------------------------------------
 
             col1, col2 = st.columns(2)
 
             with col1:
 
-                st.subheader("Student")
+                with st.container(border=True):
 
-                st.write(
-                    f"**Name:** {selected['student_name']}"
-                )
+                    st.subheader("Student")
 
-                st.write(
-                    f"**Student ID:** {selected['student_id']}"
-                )
-
-                st.write(
-                    f"**Course:** {selected['course']}"
-                )
-
-            with col2:
-
-                st.subheader("Assignment")
-
-                st.write(
-                    f"**Assignment:** {selected['assignment']}"
-                )
-
-                st.write(
-                    f"**File:** {selected['file_name']}"
-                )
-
-                st.write(
-                    f"**Submitted:** {selected['submitted_at']}"
-                )
-
-            st.divider()
-
-            # ------------------------------------------------
-            # INTEGRITY CHECK
-            # ------------------------------------------------
-
-            st.header("CRC-32 Integrity Check")
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                st.subheader(
-                    "Reference CRC-32"
-                )
-
-                st.code(
-                    selected["reference_crc"]
-                )
-
-            with col2:
-
-                st.subheader(
-                    "Current CRC-32"
-                )
-
-                if selected["received_crc"]:
-
-                    st.code(
-                        selected["received_crc"]
+                    st.write(
+                        f"**Name:** {selected['student_name']}"
                     )
 
-                else:
+                    st.write(
+                        f"**Student ID:** {selected['student_id']}"
+                    )
 
-                    st.info(
-                        "Not checked yet"
+                    st.write(
+                        f"**Course:** {selected['course']}"
+                    )
+
+            with col2:
+
+                with st.container(border=True):
+
+                    st.subheader("Assignment")
+
+                    st.write(
+                        f"**Assignment:** "
+                        f"{selected['assignment']}"
+                    )
+
+                    st.write(
+                        f"**File:** "
+                        f"{selected['file_name']}"
+                    )
+
+                    st.write(
+                        f"**Submitted:** "
+                        f"{selected['submitted_at']}"
                     )
 
             st.write("")
 
-            check_button = st.button(
+            # ------------------------------------------------
+            # FILE DOWNLOAD
+            # ------------------------------------------------
+
+            with st.container(border=True):
+
+                st.subheader("📄 Submitted Assignment")
+
+                st.write(
+                    "The assignment submitted by the student "
+                    "is available to the lecturer."
+                )
+
+                st.download_button(
+                    "⬇️ Download Assignment",
+                    data=selected["received_file_data"],
+                    file_name=selected["file_name"],
+                    key=f"download_{selected['id']}",
+                    use_container_width=True
+                )
+
+            st.write("")
+
+            # ------------------------------------------------
+            # CRC VERIFICATION
+            # ------------------------------------------------
+
+            st.header("🔐 Assignment Integrity")
+
+            st.write(
+                "Compare the original CRC-32 reference "
+                "with the CRC-32 calculated from the "
+                "received assignment."
+            )
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                with st.container(border=True):
+
+                    st.subheader(
+                        "Original CRC-32"
+                    )
+
+                    st.code(
+                        selected["original_crc"],
+                        language="text"
+                    )
+
+                    st.caption(
+                        "Generated when the student submitted "
+                        "the assignment."
+                    )
+
+            with col2:
+
+                with st.container(border=True):
+
+                    st.subheader(
+                        "Received CRC-32"
+                    )
+
+                    if selected["received_crc"]:
+
+                        st.code(
+                            selected["received_crc"],
+                            language="text"
+                        )
+
+                        st.caption(
+                            "Calculated from the received file."
+                        )
+
+                    else:
+
+                        st.info(
+                            "Not checked yet."
+                        )
+
+            st.write("")
+
+            # ------------------------------------------------
+            # CHECK BUTTON
+            # ------------------------------------------------
+
+            check = st.button(
                 "🔍 Check Assignment Integrity",
                 type="primary",
                 use_container_width=True
             )
 
-            if check_button:
+            if check:
 
-                # Calculate current CRC
+                # Calculate CRC of received file
 
                 received_crc = calculate_crc(
-                    selected["file_data"]
+                    selected["received_file_data"]
                 )
 
                 selected["received_crc"] = received_crc
 
-                # Compare CRC values
+                # Compare
 
                 if (
                     received_crc
                     ==
-                    selected["reference_crc"]
+                    selected["original_crc"]
                 ):
 
                     selected["status"] = "VERIFIED"
@@ -615,6 +815,8 @@ else:
 
                 st.rerun()
 
+            st.write("")
+
             # ------------------------------------------------
             # RESULT
             # ------------------------------------------------
@@ -622,110 +824,133 @@ else:
             if selected["status"] == "VERIFIED":
 
                 st.success(
-                    "✓ INTEGRITY VERIFIED"
+                    "✅ INTEGRITY VERIFIED"
                 )
 
                 st.write(
-                    "The reference CRC-32 and current CRC-32 "
-                    "match. No change was detected in the "
-                    "assignment data."
+                    "The Original CRC-32 and Received CRC-32 "
+                    "match. No change or corruption was detected "
+                    "in the received assignment."
                 )
 
             elif selected["status"] == "FAILED":
 
                 st.error(
-                    "✕ INTEGRITY CHECK FAILED"
+                    "❌ INTEGRITY CHECK FAILED"
                 )
 
                 st.write(
-                    "The CRC-32 values are different. "
-                    "The assignment data may have been "
-                    "changed or corrupted."
+                    "The Original CRC-32 and Received CRC-32 "
+                    "are different. The received assignment "
+                    "may have been changed or corrupted."
                 )
 
-            # ------------------------------------------------
-            # CORRUPTION SIMULATION
-            # ------------------------------------------------
+            else:
+
+                st.info(
+                    "Integrity verification has not been performed yet."
+                )
+
+            # =================================================
+            # LECTURER TESTING AREA
+            # =================================================
 
             st.divider()
 
-            st.subheader(
-                "🧪 Testing: Simulate Transmission Corruption"
-            )
-
-            st.write(
-                "This test intentionally changes one bit "
-                "of the assignment data to demonstrate "
-                "how CRC-32 detects corruption."
-            )
-
-            simulate_button = st.button(
-                "Simulate Corruption"
-            )
-
-            if simulate_button:
-
-                original_data = selected["file_data"]
-
-                if len(original_data) > 0:
-
-                    corrupted_data = bytearray(
-                        original_data
-                    )
-
-                    # Flip one bit
-
-                    corrupted_data[0] ^= 1
-
-                    corrupted_crc = calculate_crc(
-                        bytes(corrupted_data)
-                    )
-
-                    st.error(
-                        "CORRUPTION DETECTED"
-                    )
-
-                    st.write(
-                        "The assignment data was intentionally "
-                        "modified. The CRC-32 value changed."
-                    )
-
-                    col1, col2 = st.columns(2)
-
-                    with col1:
-
-                        st.write(
-                            "**Original CRC-32**"
-                        )
-
-                        st.code(
-                            selected["reference_crc"]
-                        )
-
-                    with col2:
-
-                        st.write(
-                            "**Corrupted CRC-32**"
-                        )
-
-                        st.code(
-                            corrupted_crc
-                        )
-
-            st.divider()
-
-            # ------------------------------------------------
-            # BACK BUTTON
-            # ------------------------------------------------
-
-            if st.button(
-                "← Back to Inbox",
-                use_container_width=True
+            with st.expander(
+                "🧪 Lecturer Testing Tools"
             ):
 
-                st.session_state.selected_submission = None
+                st.write(
+                    "Use this only for demonstration/testing. "
+                    "It intentionally modifies the received "
+                    "file to demonstrate CRC-32 corruption detection."
+                )
 
-                st.rerun()
+                simulate = st.button(
+                    "Simulate Transmission Corruption",
+                    key=f"simulate_{selected['id']}"
+                )
+
+                if simulate:
+
+                    original_data = (
+                        selected["received_file_data"]
+                    )
+
+                    if len(original_data) == 0:
+
+                        st.warning(
+                            "The assignment file is empty."
+                        )
+
+                    else:
+
+                        # Create corrupted copy
+
+                        corrupted_data = bytearray(
+                            original_data
+                        )
+
+                        # Flip one bit
+
+                        corrupted_data[0] ^= 1
+
+                        corrupted_data = bytes(
+                            corrupted_data
+                        )
+
+                        # Calculate CRC
+
+                        corrupted_crc = calculate_crc(
+                            corrupted_data
+                        )
+
+                        st.error(
+                            "⚠️ CORRUPTION DETECTED"
+                        )
+
+                        st.write(
+                            "One bit of the received file was "
+                            "intentionally changed."
+                        )
+
+                        col1, col2 = st.columns(2)
+
+                        with col1:
+
+                            st.write(
+                                "**Original CRC-32**"
+                            )
+
+                            st.code(
+                                selected["original_crc"]
+                            )
+
+                        with col2:
+
+                            st.write(
+                                "**Corrupted CRC-32**"
+                            )
+
+                            st.code(
+                                corrupted_crc
+                            )
+
+                        if (
+                            corrupted_crc
+                            !=
+                            selected["original_crc"]
+                        ):
+
+                            st.success(
+                                "CRC-32 successfully detected "
+                                "the simulated corruption."
+                            )
+
+            # ------------------------------------------------
+            # END DETAILS
+            # ------------------------------------------------
 
     # ========================================================
     # INBOX
@@ -738,14 +963,17 @@ else:
         if total == 0:
 
             st.info(
-                "📭 No submissions yet. "
-                "When a student submits an assignment, "
-                "it will appear here automatically."
+                "📭 No assignments have been submitted yet."
+            )
+
+            st.write(
+                "Once a student submits an assignment, "
+                "it will automatically appear in this inbox."
             )
 
         else:
 
-            # Newest submission first
+            # Newest first
 
             for submission in reversed(
                 st.session_state.submissions
@@ -756,6 +984,10 @@ else:
                     col1, col2, col3 = st.columns(
                         [4, 3, 1]
                     )
+
+                    # ----------------------------------------
+                    # STUDENT
+                    # ----------------------------------------
 
                     with col1:
 
@@ -768,8 +1000,13 @@ else:
                         )
 
                         st.caption(
-                            f"Student ID: {submission['student_id']}"
+                            f"Student ID: "
+                            f"{submission['student_id']}"
                         )
+
+                    # ----------------------------------------
+                    # FILE / STATUS
+                    # ----------------------------------------
 
                     with col2:
 
@@ -784,20 +1021,24 @@ else:
                         if submission["status"] == "PENDING":
 
                             st.warning(
-                                "● Pending"
+                                "● Pending verification"
                             )
 
                         elif submission["status"] == "VERIFIED":
 
                             st.success(
-                                "✓ Verified"
+                                "✓ Integrity verified"
                             )
 
                         else:
 
                             st.error(
-                                "✕ Failed"
+                                "✕ Integrity failed"
                             )
+
+                    # ----------------------------------------
+                    # VIEW
+                    # ----------------------------------------
 
                     with col3:
 
@@ -805,7 +1046,8 @@ else:
 
                         if st.button(
                             "View →",
-                            key=f"view_{submission['id']}"
+                            key=f"view_{submission['id']}",
+                            use_container_width=True
                         ):
 
                             st.session_state.selected_submission = (
@@ -822,18 +1064,18 @@ else:
 
         st.divider()
 
-        st.header("Verification Report")
+        st.header("📊 Verification Report")
 
         st.write(
-            "Download a CSV record of the assignment "
-            "integrity checks."
+            "Download the integrity verification history "
+            "as a CSV file."
         )
 
-        csv_data = generate_csv()
+        report = generate_report()
 
         st.download_button(
             "⬇️ Download CSV Report",
-            data=csv_data,
+            data=report,
             file_name="assignment_integrity_report.csv",
             mime="text/csv"
         )
@@ -846,6 +1088,5 @@ else:
 st.divider()
 
 st.caption(
-    "Assignment Integrity Hub • CRC-32 Based "
-    "File Integrity Verification"
+    "Assignment Integrity Hub • CRC-32 File Integrity Verification"
 )
