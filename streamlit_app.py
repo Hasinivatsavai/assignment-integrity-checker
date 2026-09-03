@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 # ============================================================
-# PAGE CONFIGURATION
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -21,198 +21,400 @@ st.set_page_config(
 # CUSTOM CSS
 # ============================================================
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
     /* ---------- GENERAL ---------- */
 
-    .block-container {
+    .stApp {
+        background: #0f1015;
+    }
+
+    .main .block-container {
         max-width: 1250px;
         padding-top: 2rem;
         padding-bottom: 4rem;
     }
 
+    h1, h2, h3 {
+        letter-spacing: -0.5px;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+
+    section[data-testid="stSidebar"] {
+        background: #24252d;
+        border-right: 1px solid #343640;
+    }
+
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 2rem;
+    }
+
+    .brand {
+        font-size: 25px;
+        font-weight: 750;
+        color: #f5f5f7;
+        margin-bottom: 5px;
+    }
+
+    .brand-icon {
+        color: #62a8ff;
+    }
+
+    .brand-subtitle {
+        color: #a7a8b0;
+        font-size: 14px;
+        margin-bottom: 28px;
+    }
+
+    .side-divider {
+        height: 1px;
+        background: #44454e;
+        margin: 22px 0;
+    }
+
+    .sidebar-info-title {
+        color: #b6b7c0;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .sidebar-info {
+        color: #eeeeef;
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .sidebar-footer {
+        color: #898a94;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-top: 35px;
+    }
+
     /* ---------- HERO ---------- */
 
     .hero {
-        padding: 2.2rem 2.4rem;
-        border-radius: 24px;
-        border: 1px solid rgba(128,128,128,0.22);
-        margin-bottom: 1.8rem;
+        background: linear-gradient(
+            135deg,
+            #191a21 0%,
+            #14151b 100%
+        );
+        border: 1px solid #30313a;
+        border-radius: 22px;
+        padding: 34px 38px;
+        margin-bottom: 34px;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.20);
     }
 
     .hero-title {
-        font-size: 2.6rem;
+        color: #f5f6f8;
+        font-size: 32px;
         font-weight: 800;
-        letter-spacing: -1px;
-        margin-bottom: 0.35rem;
+        margin-bottom: 9px;
     }
 
     .hero-subtitle {
-        font-size: 1.05rem;
-        opacity: 0.72;
-        margin-bottom: 0;
+        color: #aeb0ba;
+        font-size: 16px;
+        line-height: 1.6;
     }
 
-    /* ---------- SECTION TITLE ---------- */
+    .hero-badge {
+        display: inline-block;
+        background: #1c2d43;
+        color: #76b5ff;
+        border: 1px solid #315277;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 650;
+        margin-bottom: 15px;
+    }
+
+    /* ---------- SECTION HEADERS ---------- */
 
     .section-title {
-        font-size: 1.35rem;
-        font-weight: 750;
-        margin-top: 1rem;
-        margin-bottom: 0.25rem;
+        font-size: 27px;
+        font-weight: 780;
+        color: #f4f4f6;
+        margin-bottom: 4px;
     }
 
     .section-subtitle {
-        opacity: 0.68;
-        margin-bottom: 1.2rem;
+        color: #9fa1ab;
+        font-size: 15px;
+        margin-bottom: 24px;
     }
 
     /* ---------- CARDS ---------- */
 
     .info-card {
-        border: 1px solid rgba(128,128,128,0.22);
-        border-radius: 18px;
-        padding: 1.25rem;
-        min-height: 120px;
+        background: #191a20;
+        border: 1px solid #30313a;
+        border-radius: 16px;
+        padding: 21px;
+        height: 100%;
     }
 
-    .info-label {
-        font-size: 0.82rem;
-        opacity: 0.65;
-        margin-bottom: 0.45rem;
-    }
-
-    .info-value {
-        font-size: 1.25rem;
+    .info-card-title {
+        color: #f3f3f5;
+        font-size: 15px;
         font-weight: 700;
-        word-break: break-word;
+        margin-bottom: 8px;
+    }
+
+    .info-card-text {
+        color: #a6a7b0;
+        font-size: 13px;
+        line-height: 1.55;
     }
 
     /* ---------- SUBMISSION CARD ---------- */
 
     .submission-card {
-        border: 1px solid rgba(128,128,128,0.22);
-        border-radius: 20px;
-        padding: 1.35rem;
-        margin-bottom: 1rem;
+        background: #191a20;
+        border: 1px solid #30313a;
+        border-radius: 16px;
+        padding: 22px;
+        margin-bottom: 12px;
+    }
+
+    .submission-id {
+        color: #75b4ff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
     }
 
     .submission-name {
-        font-size: 1.15rem;
+        color: #f3f3f5;
+        font-size: 18px;
         font-weight: 750;
+        margin-top: 5px;
     }
 
     .submission-meta {
-        opacity: 0.68;
-        font-size: 0.9rem;
-        margin-top: 0.25rem;
+        color: #9ea0aa;
+        font-size: 13px;
+        margin-top: 5px;
     }
 
     /* ---------- STATUS ---------- */
 
-    .status-box {
-        border-radius: 18px;
-        padding: 1.5rem;
-        text-align: center;
-        border: 1px solid rgba(128,128,128,0.22);
-        margin: 1rem 0;
+    .status-pending {
+        display: inline-block;
+        background: #332c1b;
+        color: #e9c76c;
+        border: 1px solid #66572d;
+        border-radius: 999px;
+        padding: 5px 11px;
+        font-size: 12px;
+        font-weight: 700;
     }
 
-    .status-icon {
-        font-size: 2.4rem;
+    .status-verified {
+        display: inline-block;
+        background: #183222;
+        color: #70d998;
+        border: 1px solid #326945;
+        border-radius: 999px;
+        padding: 5px 11px;
+        font-size: 12px;
+        font-weight: 700;
     }
 
-    .status-title {
-        font-size: 1.45rem;
-        font-weight: 800;
-        margin-top: 0.35rem;
+    .status-failed {
+        display: inline-block;
+        background: #371d20;
+        color: #ff858d;
+        border: 1px solid #71343a;
+        border-radius: 999px;
+        padding: 5px 11px;
+        font-size: 12px;
+        font-weight: 700;
     }
 
-    .status-description {
-        opacity: 0.72;
-        margin-top: 0.35rem;
-    }
-
-    /* ---------- CRC ---------- */
+    /* ---------- CRC BOX ---------- */
 
     .crc-box {
-        border: 1px solid rgba(128,128,128,0.22);
-        border-radius: 16px;
-        padding: 1.2rem;
-        text-align: center;
+        background: #15161b;
+        border: 1px solid #343640;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 8px 0;
     }
 
     .crc-label {
-        font-size: 0.8rem;
-        opacity: 0.65;
+        color: #9799a3;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 7px;
     }
 
     .crc-value {
+        color: #f3f4f6;
         font-family: monospace;
-        font-size: 1.45rem;
-        font-weight: 800;
-        margin-top: 0.4rem;
+        font-size: 23px;
+        font-weight: 750;
         letter-spacing: 1px;
+    }
+
+    /* ---------- SUCCESS / ERROR ---------- */
+
+    .success-panel {
+        background: #14281c;
+        border: 1px solid #326a45;
+        border-radius: 18px;
+        padding: 28px;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .success-title {
+        color: #73e19a;
+        font-size: 25px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .success-text {
+        color: #b5d9c0;
+        font-size: 14px;
+    }
+
+    .error-panel {
+        background: #2c171a;
+        border: 1px solid #71363c;
+        border-radius: 18px;
+        padding: 28px;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .error-title {
+        color: #ff858d;
+        font-size: 25px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .error-text {
+        color: #e0b5b9;
+        font-size: 14px;
+    }
+
+    /* ---------- METRIC CARDS ---------- */
+
+    .metric-card {
+        background: #191a20;
+        border: 1px solid #30313a;
+        border-radius: 15px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .metric-number {
+        color: #f4f4f6;
+        font-size: 27px;
+        font-weight: 800;
+    }
+
+    .metric-label {
+        color: #9698a2;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+
+    /* ---------- STREAMLIT INPUTS ---------- */
+
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="textarea"] > div,
+    div[data-baseweb="select"] > div {
+        background-color: #25262e;
+        border-color: #353640;
+        border-radius: 10px;
+    }
+
+    input, textarea {
+        color: #f1f1f3 !important;
+    }
+
+    label {
+        color: #e4e4e7 !important;
+    }
+
+    /* ---------- BUTTONS ---------- */
+
+    .stButton > button {
+        border-radius: 10px;
+        font-weight: 650;
+        min-height: 43px;
+    }
+
+    .stDownloadButton > button {
+        border-radius: 10px;
+        font-weight: 650;
+    }
+
+    /* ---------- FILE UPLOADER ---------- */
+
+    section[data-testid="stFileUploaderDropzone"] {
+        background: #191a20;
+        border: 1px dashed #474955;
+        border-radius: 14px;
     }
 
     /* ---------- FOOTER ---------- */
 
     .footer {
         text-align: center;
-        opacity: 0.45;
-        font-size: 0.82rem;
-        margin-top: 3rem;
+        color: #737580;
+        font-size: 12px;
+        margin-top: 55px;
+        padding-top: 20px;
+        border-top: 1px solid #292a31;
     }
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+</style>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
-# HELPER FUNCTIONS
+# FUNCTIONS
 # ============================================================
 
 def calculate_crc(data):
-    """Return CRC-32 as an 8-character hexadecimal value."""
+    """Calculate CRC-32 and return it as an 8-character hexadecimal value."""
     return f"{zlib.crc32(data) & 0xffffffff:08X}"
 
 
-def info_card(label, value):
-    """Display a small information card."""
-    st.markdown(
-        f"""
-        <div class="info-card">
-            <div class="info-label">{label}</div>
-            <div class="info-value">{value}</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+def create_submission_id():
+    """Create a simple submission ID for the demo."""
+    number = len(st.session_state.submissions) + 1
+    return f"SUB-{number:03d}"
 
 
-def crc_card(label, value):
-    """Display a CRC value card."""
-    st.markdown(
-        f"""
-        <div class="crc-box">
-            <div class="crc-label">{label}</div>
-            <div class="crc-value">{value}</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+def status_badge(status):
+    """Return HTML for submission status."""
+    if status == "VERIFIED":
+        return '<span class="status-verified">✓ VERIFIED</span>'
+    elif status == "FAILED":
+        return '<span class="status-failed">✕ FAILED</span>'
+    else:
+        return '<span class="status-pending">● PENDING</span>'
 
 
-def make_csv(submissions):
-    """Create CSV report from submission records."""
-
+def generate_csv():
+    """Generate CSV verification report."""
     output = io.StringIO()
 
-    fieldnames = [
+    writer = csv.writer(output)
+
+    writer.writerow([
         "Submission ID",
         "Student Name",
         "Student ID",
@@ -221,52 +423,23 @@ def make_csv(submissions):
         "File Name",
         "Reference CRC-32",
         "Received CRC-32",
-        "Integrity Status",
+        "Status",
         "Submitted At"
-    ]
+    ])
 
-    writer = csv.DictWriter(
-        output,
-        fieldnames=fieldnames
-    )
-
-    writer.writeheader()
-
-    for submission in submissions:
-
-        writer.writerow(
-            {
-                "Submission ID":
-                    submission["submission_id"],
-
-                "Student Name":
-                    submission["student_name"],
-
-                "Student ID":
-                    submission["student_id"],
-
-                "Course":
-                    submission["course"],
-
-                "Assignment":
-                    submission["assignment"],
-
-                "File Name":
-                    submission["filename"],
-
-                "Reference CRC-32":
-                    submission["reference_crc"],
-
-                "Received CRC-32":
-                    submission["received_crc"],
-
-                "Integrity Status":
-                    submission["status"],
-
-                "Submitted At":
-                    submission["submitted_at"]
-            }
-        )
+    for submission in st.session_state.submissions:
+        writer.writerow([
+            submission["id"],
+            submission["student_name"],
+            submission["student_id"],
+            submission["course"],
+            submission["assignment"],
+            submission["file_name"],
+            submission["reference_crc"],
+            submission.get("received_crc", ""),
+            submission["status"],
+            submission["submitted_at"]
+        ])
 
     return output.getvalue().encode("utf-8")
 
@@ -294,320 +467,335 @@ if "corruption_test" not in st.session_state:
 
 with st.sidebar:
 
-    st.markdown("## 🛡️ Integrity Hub")
-
-    st.caption("Assignment submission & verification")
-
-    st.divider()
-
-    mode = st.radio(
-        "Choose portal",
-        [
-            "👨‍🎓 Student",
-            "👨‍🏫 Lecturer"
-        ]
-    )
-
-    st.divider()
-
-    st.caption("CRC-32")
-
-    st.write(
-        "A checksum used to detect whether "
-        "file data has changed or become corrupted."
-    )
-
-    st.divider()
-
-    st.caption(
-        "Prototype • CRC-32 Assignment Integrity System"
-    )
-
-
-# ============================================================
-# HEADER
-# ============================================================
-
-st.markdown(
-    """
-    <div class="hero">
-
-        <div class="hero-title">
-            🛡️ Assignment Integrity Hub
-        </div>
-
-        <div class="hero-subtitle">
-            Simple assignment submission with built-in
-            CRC-32 integrity verification.
-        </div>
-
+    st.markdown("""
+    <div class="brand">
+        <span class="brand-icon">🛡️</span> Integrity Hub
     </div>
-    """,
-    unsafe_allow_html=True
-)
+
+    <div class="brand-subtitle">
+        Assignment submission & verification
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="side-divider"></div>', unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="sidebar-info-title">CHOOSE PORTAL</div>',
+        unsafe_allow_html=True
+    )
+
+    role = st.radio(
+        "Portal",
+        ["🎓 Student", "👨‍🏫 Lecturer"],
+        label_visibility="collapsed"
+    )
+
+    st.markdown('<div class="side-divider"></div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="sidebar-info-title">CRC-32</div>
+
+    <div class="sidebar-info">
+        A checksum used to detect whether
+        file data has changed or become
+        corrupted during transmission.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="side-divider"></div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="sidebar-footer">
+        Prototype • CRC-32 Assignment Integrity System<br><br>
+        Student submission → Lecturer verification
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # STUDENT PORTAL
 # ============================================================
 
-if mode == "👨‍🎓 Student":
+if role == "🎓 Student":
+
+    # HERO
+    st.markdown("""
+    <div class="hero">
+
+        <div class="hero-badge">
+            CRC-32 INTEGRITY PROTECTION
+        </div>
+
+        <div class="hero-title">
+            🛡️ Assignment Integrity Hub
+        </div>
+
+        <div class="hero-subtitle">
+            Submit your assignment normally.
+            The system automatically creates a CRC-32
+            integrity reference for your submission.
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    # SUCCESS MESSAGE AFTER SUBMISSION
+
+    if st.session_state.student_submitted:
+
+        latest = st.session_state.submissions[-1]
+
+        st.markdown("""
+        <div class="success-panel">
+
+            <div class="success-title">
+                ✓ Assignment Submitted Successfully
+            </div>
+
+            <div class="success-text">
+                Your assignment has been sent to the lecturer
+                and its integrity reference has been generated.
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <div class="metric-number">{latest["id"]}</div>
+                    <div class="metric-label">SUBMISSION ID</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with col2:
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <div class="metric-number">✓</div>
+                    <div class="metric-label">SUBMISSION RECEIVED</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        with col3:
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <div class="metric-number">CRC-32</div>
+                    <div class="metric-label">INTEGRITY METHOD</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        st.markdown("")
+
+        if st.button("Submit Another Assignment", use_container_width=False):
+            st.session_state.student_submitted = False
+            st.rerun()
+
+    else:
+
+        # SECTION TITLE
+
+        st.markdown(
+            '<div class="section-title">Submit Assignment</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div class="section-subtitle">'
+            'Enter your details and upload your assignment.'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        # STUDENT DETAILS
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            student_name = st.text_input(
+                "Student Name",
+                placeholder="Enter your name"
+            )
+
+        with col2:
+            student_id = st.text_input(
+                "Student ID",
+                placeholder="Enter your student ID"
+            )
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            course = st.text_input(
+                "Course",
+                placeholder="Example: Database Management Systems"
+            )
+
+        with col4:
+            assignment = st.text_input(
+                "Assignment",
+                placeholder="Example: Assignment 03"
+            )
+
+        st.markdown("")
+
+        # FILE UPLOAD
+
+        st.markdown(
+            '<div class="section-title" style="font-size:20px;">'
+            'Assignment File'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div class="section-subtitle">'
+            'Upload your completed assignment.'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        uploaded_file = st.file_uploader(
+            "Choose your assignment file",
+            type=["pdf", "docx", "txt"],
+            help="Supported formats: PDF, DOCX and TXT"
+        )
+
+        st.markdown("")
+
+        # SUBMIT BUTTON
+
+        submit = st.button(
+            "Submit Assignment →",
+            type="primary",
+            use_container_width=True
+        )
+
+        if submit:
+
+            if not student_name.strip():
+                st.error("Please enter your name.")
+
+            elif not student_id.strip():
+                st.error("Please enter your Student ID.")
+
+            elif not course.strip():
+                st.error("Please enter your course.")
+
+            elif not assignment.strip():
+                st.error("Please enter the assignment name.")
+
+            elif uploaded_file is None:
+                st.error("Please upload your assignment.")
+
+            else:
+
+                # Read uploaded file
+
+                file_data = uploaded_file.getvalue()
+
+                # Generate reference CRC
+
+                reference_crc = calculate_crc(file_data)
+
+                # Create submission record
+
+                submission = {
+                    "id": create_submission_id(),
+                    "student_name": student_name.strip(),
+                    "student_id": student_id.strip(),
+                    "course": course.strip(),
+                    "assignment": assignment.strip(),
+                    "file_name": uploaded_file.name,
+                    "file_data": file_data,
+                    "reference_crc": reference_crc,
+                    "received_crc": "",
+                    "status": "PENDING",
+                    "submitted_at": datetime.now().strftime(
+                        "%d %b %Y, %I:%M %p"
+                    )
+                }
+
+                # Store submission
+
+                st.session_state.submissions.append(submission)
+
+                st.session_state.student_submitted = True
+
+                st.rerun()
+
+    # INFORMATION CARDS
+
+    st.markdown("")
 
     st.markdown(
-        '<div class="section-title">Submit Assignment</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="section-subtitle">'
-        'Upload your assignment and submit it to the lecturer.'
+        '<div class="section-title" style="font-size:22px;">'
+        'How it works'
         '</div>',
         unsafe_allow_html=True
     )
 
+    st.markdown("")
 
-    # --------------------------------------------------------
-    # STUDENT DETAILS
-    # --------------------------------------------------------
+    c1, c2, c3 = st.columns(3)
 
-    col1, col2 = st.columns(2)
+    with c1:
+        st.markdown("""
+        <div class="info-card">
 
-    with col1:
+            <div class="info-card-title">
+                01 · Submit
+            </div>
 
-        student_name = st.text_input(
-            "Student Name",
-            placeholder="Enter your name"
-        )
+            <div class="info-card-text">
+                Upload your assignment and submit
+                it to the lecturer.
+            </div>
 
-    with col2:
+        </div>
+        """, unsafe_allow_html=True)
 
-        student_id = st.text_input(
-            "Student ID",
-            placeholder="Enter your student ID"
-        )
+    with c2:
+        st.markdown("""
+        <div class="info-card">
 
+            <div class="info-card-title">
+                02 · Protect
+            </div>
 
-    col3, col4 = st.columns(2)
+            <div class="info-card-text">
+                The system automatically generates
+                a CRC-32 reference for the file.
+            </div>
 
-    with col3:
+        </div>
+        """, unsafe_allow_html=True)
 
-        course = st.text_input(
-            "Course",
-            placeholder="Example: Database Management Systems"
-        )
+    with c3:
+        st.markdown("""
+        <div class="info-card">
 
-    with col4:
+            <div class="info-card-title">
+                03 · Verify
+            </div>
 
-        assignment = st.text_input(
-            "Assignment",
-            placeholder="Example: Assignment 03"
-        )
+            <div class="info-card-text">
+                The lecturer can later check whether
+                the assignment data has changed.
+            </div>
 
-
-    st.write("")
-
-
-    # --------------------------------------------------------
-    # FILE UPLOAD
-    # --------------------------------------------------------
-
-    uploaded_file = st.file_uploader(
-        "Upload Assignment",
-        type=["pdf", "docx", "txt"],
-        help="Supported formats: PDF, DOCX and TXT"
-    )
-
-
-    if uploaded_file:
-
-        file_data = uploaded_file.getvalue()
-
-        current_crc = calculate_crc(file_data)
-
-
-        st.write("")
-
-
-        # FILE INFORMATION
-
-        a, b, c = st.columns(3)
-
-        with a:
-
-            info_card(
-                "File",
-                uploaded_file.name
-            )
-
-        with b:
-
-            info_card(
-                "File Size",
-                f"{len(file_data):,} bytes"
-            )
-
-        with c:
-
-            info_card(
-                "Integrity Fingerprint",
-                current_crc
-            )
-
-
-        st.write("")
-
-
-        # ----------------------------------------------------
-        # SUBMIT BUTTON
-        # ----------------------------------------------------
-
-        if st.button(
-            "📤 Submit Assignment",
-            use_container_width=True,
-            type="primary"
-        ):
-
-            if not student_name.strip():
-
-                st.error(
-                    "Please enter your name."
-                )
-
-            elif not student_id.strip():
-
-                st.error(
-                    "Please enter your Student ID."
-                )
-
-            elif not course.strip():
-
-                st.error(
-                    "Please enter the course name."
-                )
-
-            elif not assignment.strip():
-
-                st.error(
-                    "Please enter the assignment name."
-                )
-
-            else:
-
-                submission_number = (
-                    len(st.session_state.submissions) + 1
-                )
-
-                submission_id = (
-                    f"SUB-{submission_number:03d}"
-                )
-
-                submission = {
-
-                    "submission_id":
-                        submission_id,
-
-                    "student_name":
-                        student_name.strip(),
-
-                    "student_id":
-                        student_id.strip(),
-
-                    "course":
-                        course.strip(),
-
-                    "assignment":
-                        assignment.strip(),
-
-                    "filename":
-                        uploaded_file.name,
-
-                    "file_data":
-                        file_data,
-
-                    "reference_crc":
-                        current_crc,
-
-                    "received_crc":
-                        None,
-
-                    "status":
-                        "PENDING",
-
-                    "submitted_at":
-                        datetime.now().strftime(
-                            "%d %b %Y • %I:%M %p"
-                        )
-                }
-
-
-                st.session_state.submissions.append(
-                    submission
-                )
-
-                st.session_state.student_submitted = True
-
-                st.session_state.selected_submission = (
-                    submission_id
-                )
-
-
-                st.success(
-                    "Assignment submitted successfully."
-                )
-
-
-    # --------------------------------------------------------
-    # SUBMISSION CONFIRMATION
-    # --------------------------------------------------------
-
-    if st.session_state.student_submitted:
-
-        latest = (
-            st.session_state.submissions[-1]
-        )
-
-
-        st.divider()
-
-
-        st.markdown(
-            "### ✅ Assignment Submitted"
-        )
-
-        st.write(
-            "Your assignment has been added to the "
-            "lecturer's submission inbox."
-        )
-
-
-        x1, x2, x3 = st.columns(3)
-
-        with x1:
-
-            info_card(
-                "Submission ID",
-                latest["submission_id"]
-            )
-
-        with x2:
-
-            info_card(
-                "Submitted File",
-                latest["filename"]
-            )
-
-        with x3:
-
-            info_card(
-                "Status",
-                "🟡 Submitted"
-            )
-
-
-        st.info(
-            "Switch to Lecturer mode from the sidebar "
-            "to see this submission in the lecturer inbox."
-        )
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ============================================================
@@ -616,520 +804,477 @@ if mode == "👨‍🎓 Student":
 
 else:
 
-    st.markdown(
-        '<div class="section-title">Lecturer Inbox</div>',
-        unsafe_allow_html=True
-    )
+    # HERO
 
-    st.markdown(
-        '<div class="section-subtitle">'
-        'Student submissions appear here automatically. '
-        'No file upload is required.'
-        '</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <div class="hero">
 
+        <div class="hero-badge">
+            LECTURER PORTAL
+        </div>
 
-    submissions = st.session_state.submissions
+        <div class="hero-title">
+            📥 Assignment Inbox
+        </div>
 
+        <div class="hero-subtitle">
+            Student submissions appear here automatically.
+            Open a submission to verify its file integrity
+            using CRC-32.
+        </div>
 
-    # --------------------------------------------------------
-    # SUMMARY
-    # --------------------------------------------------------
+    </div>
+    """, unsafe_allow_html=True)
 
-    total = len(submissions)
+    # ========================================================
+    # SUMMARY METRICS
+    # ========================================================
 
-    verified = sum(
-        1
-        for s in submissions
+    total = len(st.session_state.submissions)
+
+    verified = len([
+        s for s in st.session_state.submissions
         if s["status"] == "VERIFIED"
-    )
+    ])
 
-    corrupted = sum(
-        1
-        for s in submissions
-        if s["status"] == "CORRUPTED"
-    )
+    failed = len([
+        s for s in st.session_state.submissions
+        if s["status"] == "FAILED"
+    ])
 
-    pending = sum(
-        1
-        for s in submissions
+    pending = len([
+        s for s in st.session_state.submissions
         if s["status"] == "PENDING"
-    )
+    ])
 
+    m1, m2, m3, m4 = st.columns(4)
 
-    s1, s2, s3, s4 = st.columns(4)
-
-    with s1:
-
-        info_card(
-            "Total Submissions",
-            total
+    with m1:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-number">{total}</div>
+                <div class="metric-label">TOTAL SUBMISSIONS</div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    with s2:
-
-        info_card(
-            "Verified",
-            f"🟢 {verified}"
+    with m2:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-number">{pending}</div>
+                <div class="metric-label">PENDING CHECK</div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    with s3:
-
-        info_card(
-            "Corrupted",
-            f"🔴 {corrupted}"
+    with m3:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-number">{verified}</div>
+                <div class="metric-label">VERIFIED</div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    with s4:
-
-        info_card(
-            "Pending",
-            f"🟡 {pending}"
+    with m4:
+        st.markdown(
+            f"""
+            <div class="metric-card">
+                <div class="metric-number">{failed}</div>
+                <div class="metric-label">FAILED</div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
+    st.markdown("")
 
-    st.write("")
-
-
-    # --------------------------------------------------------
-    # EMPTY INBOX
-    # --------------------------------------------------------
-
-    if not submissions:
-
-        st.info(
-            "No assignments have been submitted yet."
-        )
-
-        st.write(
-            "When a student submits an assignment, "
-            "it will automatically appear here."
-        )
-
-
-    # --------------------------------------------------------
-    # SUBMISSION LIST
-    # --------------------------------------------------------
-
-    else:
-
-        st.markdown("### 📥 Recent Submissions")
-
-
-        for submission in reversed(submissions):
-
-            with st.container(border=True):
-
-                left, middle, right = st.columns(
-                    [2.2, 2.5, 1]
-                )
-
-
-                with left:
-
-                    st.markdown(
-                        f"### 📄 {submission['filename']}"
-                    )
-
-                    st.caption(
-                        f"{submission['student_name']} "
-                        f"• {submission['student_id']}"
-                    )
-
-
-                with middle:
-
-                    st.write(
-                        f"**{submission['assignment']}**"
-                    )
-
-                    st.caption(
-                        f"{submission['course']} "
-                        f"• {submission['submitted_at']}"
-                    )
-
-
-                with right:
-
-                    if submission["status"] == "VERIFIED":
-
-                        st.success(
-                            "VERIFIED"
-                        )
-
-                    elif submission["status"] == "CORRUPTED":
-
-                        st.error(
-                            "CORRUPTED"
-                        )
-
-                    else:
-
-                        st.warning(
-                            "PENDING"
-                        )
-
-
-                    if st.button(
-                        "View →",
-                        key=(
-                            "view_"
-                            + submission["submission_id"]
-                        ),
-                        use_container_width=True
-                    ):
-
-                        st.session_state.selected_submission = (
-                            submission["submission_id"]
-                        )
-
-                        st.session_state.corruption_test = False
-
-
-    # --------------------------------------------------------
+    # ========================================================
     # SELECTED SUBMISSION
-    # --------------------------------------------------------
+    # ========================================================
 
-    selected_id = (
-        st.session_state.selected_submission
-    )
+    if st.session_state.selected_submission is not None:
 
+        selected = None
 
-    selected = None
+        for submission in st.session_state.submissions:
 
-
-    if selected_id:
-
-        for submission in submissions:
-
-            if (
-                submission["submission_id"]
-                == selected_id
-            ):
-
+            if submission["id"] == st.session_state.selected_submission:
                 selected = submission
                 break
 
+        if selected is not None:
 
-    if selected:
-
-        st.divider()
-
-
-        st.markdown(
-            "## 🔍 Assignment Integrity Check"
-        )
-
-
-        st.caption(
-            f"Submission {selected['submission_id']}"
-        )
-
-
-        # ----------------------------------------------------
-        # ASSIGNMENT DETAILS
-        # ----------------------------------------------------
-
-        d1, d2, d3 = st.columns(3)
-
-        with d1:
-
-            info_card(
-                "Student",
-                selected["student_name"]
+            st.markdown(
+                '<div class="section-title">'
+                'Submission Details'
+                '</div>',
+                unsafe_allow_html=True
             )
 
-        with d2:
-
-            info_card(
-                "Assignment",
-                selected["assignment"]
+            st.markdown(
+                '<div class="section-subtitle">'
+                'Review the submission and perform an integrity check.'
+                '</div>',
+                unsafe_allow_html=True
             )
 
-        with d3:
+            # DETAILS CARD
 
-            info_card(
-                "Submitted",
-                selected["submitted_at"]
+            st.markdown(
+                f"""
+                <div class="submission-card">
+
+                    <div class="submission-id">
+                        {selected["id"]}
+                    </div>
+
+                    <div class="submission-name">
+                        {selected["assignment"]}
+                    </div>
+
+                    <div class="submission-meta">
+                        Student: {selected["student_name"]}
+                        &nbsp; • &nbsp;
+                        ID: {selected["student_id"]}
+                        &nbsp; • &nbsp;
+                        Course: {selected["course"]}
+                    </div>
+
+                    <div class="submission-meta">
+                        File: {selected["file_name"]}
+                        &nbsp; • &nbsp;
+                        Submitted: {selected["submitted_at"]}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
+            st.markdown("")
 
-        st.write("")
+            # CRC REFERENCE
 
-
-        d4, d5 = st.columns(2)
-
-        with d4:
-
-            info_card(
-                "File",
-                selected["filename"]
+            st.markdown(
+                '<div class="section-title" style="font-size:20px;">'
+                'Integrity Verification'
+                '</div>',
+                unsafe_allow_html=True
             )
 
-        with d5:
-
-            info_card(
-                "Submission ID",
-                selected["submission_id"]
+            st.markdown(
+                '<div class="section-subtitle">'
+                'Compare the stored reference CRC-32 with the current file CRC-32.'
+                '</div>',
+                unsafe_allow_html=True
             )
-
-
-        st.write("")
-
-
-        # ----------------------------------------------------
-        # CHECK INTEGRITY
-        # ----------------------------------------------------
-
-        st.markdown(
-            "### 🛡️ Integrity Verification"
-        )
-
-        st.write(
-            "The lecturer does not need to upload the file. "
-            "The submitted assignment is already stored "
-            "in the submission record."
-        )
-
-
-        if st.button(
-            "🔐 Check Assignment Integrity",
-            use_container_width=True,
-            type="primary",
-            key=(
-                "check_"
-                + selected["submission_id"]
-            )
-        ):
-
-            received_crc = calculate_crc(
-                selected["file_data"]
-            )
-
-            selected["received_crc"] = (
-                received_crc
-            )
-
-
-            if (
-                selected["reference_crc"]
-                == received_crc
-            ):
-
-                selected["status"] = (
-                    "VERIFIED"
-                )
-
-            else:
-
-                selected["status"] = (
-                    "CORRUPTED"
-                )
-
-
-        # ----------------------------------------------------
-        # SHOW CRC VALUES AFTER CHECK
-        # ----------------------------------------------------
-
-        if selected["received_crc"]:
-
-            st.write("")
-
 
             crc1, crc2 = st.columns(2)
 
-
             with crc1:
 
-                crc_card(
-                    "Reference CRC-32",
-                    selected["reference_crc"]
-                )
+                st.markdown(
+                    f"""
+                    <div class="crc-box">
 
+                        <div class="crc-label">
+                            Reference CRC-32
+                        </div>
+
+                        <div class="crc-value">
+                            {selected["reference_crc"]}
+                        </div>
+
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
             with crc2:
 
-                crc_card(
-                    "Received CRC-32",
-                    selected["received_crc"]
+                current_crc = ""
+
+                if selected["received_crc"]:
+                    current_crc = selected["received_crc"]
+                else:
+                    current_crc = "Not checked"
+
+                st.markdown(
+                    f"""
+                    <div class="crc-box">
+
+                        <div class="crc-label">
+                            Current / Received CRC-32
+                        </div>
+
+                        <div class="crc-value">
+                            {current_crc}
+                        </div>
+
+                    </div>
+                    """,
+                    unsafe_allow_html=True
                 )
 
+            st.markdown("")
 
-            st.write("")
+            # CHECK BUTTON
 
+            if st.button(
+                "🔍 Check Assignment Integrity",
+                type="primary",
+                use_container_width=True
+            ):
+
+                # Calculate CRC from the stored submission bytes
+
+                received_crc = calculate_crc(selected["file_data"])
+
+                selected["received_crc"] = received_crc
+
+                if received_crc == selected["reference_crc"]:
+
+                    selected["status"] = "VERIFIED"
+
+                else:
+
+                    selected["status"] = "FAILED"
+
+                st.rerun()
+
+            # RESULT
 
             if selected["status"] == "VERIFIED":
 
-                st.markdown(
-                    """
-                    <div class="status-box">
+                st.markdown("""
+                <div class="success-panel">
 
-                        <div class="status-icon">
-                            🟢
-                        </div>
-
-                        <div class="status-title">
-                            INTEGRITY VERIFIED
-                        </div>
-
-                        <div class="status-description">
-                            The received assignment matches
-                            the reference submission data.
-                        </div>
-
+                    <div class="success-title">
+                        ✓ INTEGRITY VERIFIED
                     </div>
-                    """,
-                    unsafe_allow_html=True
+
+                    <div class="success-text">
+                        Reference CRC-32 and current CRC-32 match.
+                        No change was detected in the assignment data.
+                    </div>
+
+                </div>
+                """, unsafe_allow_html=True)
+
+            elif selected["status"] == "FAILED":
+
+                st.markdown("""
+                <div class="error-panel">
+
+                    <div class="error-title">
+                        ✕ INTEGRITY CHECK FAILED
+                    </div>
+
+                    <div class="error-text">
+                        The CRC-32 values are different.
+                        The assignment data may have been changed
+                        or corrupted.
+                    </div>
+
+                </div>
+                """, unsafe_allow_html=True)
+
+            # =================================================
+            # CORRUPTION SIMULATION
+            # =================================================
+
+            st.markdown("")
+
+            with st.expander("🧪 Testing Tools — Simulate Transmission Corruption"):
+
+                st.write(
+                    "This test intentionally changes one byte of the "
+                    "assignment data to demonstrate how CRC-32 detects corruption."
                 )
 
+                if st.button(
+                    "Simulate Corruption",
+                    use_container_width=False
+                ):
 
-            elif selected["status"] == "CORRUPTED":
+                    original_data = selected["file_data"]
 
-                st.markdown(
-                    """
-                    <div class="status-box">
+                    if len(original_data) > 0:
 
-                        <div class="status-icon">
-                            🔴
-                        </div>
+                        corrupted_data = bytearray(original_data)
 
-                        <div class="status-title">
-                            INTEGRITY CHECK FAILED
-                        </div>
+                        # Flip one bit in the first byte
 
-                        <div class="status-description">
-                            The received assignment does not
-                            match the reference submission data.
-                        </div>
+                        corrupted_data[0] ^= 1
 
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                        corrupted_crc = calculate_crc(
+                            bytes(corrupted_data)
+                        )
 
+                        st.session_state.corruption_test = True
 
-        # ----------------------------------------------------
-        # TESTING / ERROR SIMULATION
-        # ----------------------------------------------------
+                        if corrupted_crc != selected["reference_crc"]:
 
-        st.divider()
+                            st.error(
+                                "CORRUPTION DETECTED — "
+                                "The CRC-32 changed after the file data was modified."
+                            )
 
+                            st.code(
+                                f"Reference CRC-32 : {selected['reference_crc']}\n"
+                                f"Corrupted CRC-32 : {corrupted_crc}"
+                            )
+
+                        else:
+
+                            st.warning(
+                                "The CRC values matched in this simulation."
+                            )
+
+            st.markdown("")
+
+            if st.button("← Back to Inbox"):
+
+                st.session_state.selected_submission = None
+                st.session_state.corruption_test = False
+                st.rerun()
+
+    # ========================================================
+    # INBOX
+    # ========================================================
+
+    else:
 
         st.markdown(
-            "### 🧪 Testing Tools"
+            '<div class="section-title">'
+            'Submissions'
+            '</div>',
+            unsafe_allow_html=True
         )
-
-        st.caption(
-            "For demonstration purposes, you can simulate "
-            "a transmission error without changing the "
-            "student's original submission."
-        )
-
-
-        if st.button(
-            "⚡ Simulate Transmission Corruption",
-            use_container_width=True,
-            key=(
-                "corrupt_"
-                + selected["submission_id"]
-            )
-        ):
-
-            st.session_state.corruption_test = True
-
-
-        if st.session_state.corruption_test:
-
-            original_data = bytearray(
-                selected["file_data"]
-            )
-
-
-            if len(original_data) > 0:
-
-                # Flip one bit in the first byte.
-                original_data[0] ^= 1
-
-
-            simulated_crc = calculate_crc(
-                original_data
-            )
-
-
-            st.write("")
-
-
-            c1, c2 = st.columns(2)
-
-
-            with c1:
-
-                crc_card(
-                    "Original Reference CRC",
-                    selected["reference_crc"]
-                )
-
-
-            with c2:
-
-                crc_card(
-                    "Simulated Received CRC",
-                    simulated_crc
-                )
-
-
-            st.write("")
-
-
-            if (
-                simulated_crc
-                != selected["reference_crc"]
-            ):
-
-                st.error(
-                    "🔴 CORRUPTION DETECTED — "
-                    "the simulated change produced "
-                    "a different CRC-32 value."
-                )
-
-            else:
-
-                st.warning(
-                    "The CRC values matched in this simulation."
-                )
-
-
-        # ----------------------------------------------------
-        # REPORT
-        # ----------------------------------------------------
-
-        st.divider()
-
 
         st.markdown(
-            "### 📄 Submission Report"
+            '<div class="section-subtitle">'
+            'Student assignments received by the lecturer.'
+            '</div>',
+            unsafe_allow_html=True
         )
 
+        if len(st.session_state.submissions) == 0:
 
-        report_data = [
-            selected
-        ]
+            st.markdown("""
+            <div class="info-card">
 
+                <div class="info-card-title">
+                    📭 No submissions yet
+                </div>
+
+                <div class="info-card-text">
+                    When a student submits an assignment,
+                    it will automatically appear in this inbox.
+                </div>
+
+            </div>
+            """, unsafe_allow_html=True)
+
+        else:
+
+            # Show newest submission first
+
+            for submission in reversed(st.session_state.submissions):
+
+                col1, col2 = st.columns([5, 1])
+
+                with col1:
+
+                    st.markdown(
+                        f"""
+                        <div class="submission-card">
+
+                            <div class="submission-id">
+                                {submission["id"]}
+                            </div>
+
+                            <div class="submission-name">
+                                {submission["assignment"]}
+                            </div>
+
+                            <div class="submission-meta">
+                                👤 {submission["student_name"]}
+                                &nbsp; • &nbsp;
+                                {submission["student_id"]}
+                                &nbsp; • &nbsp;
+                                {submission["course"]}
+                            </div>
+
+                            <div class="submission-meta">
+                                📄 {submission["file_name"]}
+                                &nbsp; • &nbsp;
+                                {submission["submitted_at"]}
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                {status_badge(submission["status"])}
+                            </div>
+
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+                with col2:
+
+                    st.markdown("<br>", unsafe_allow_html=True)
+
+                    if st.button(
+                        "View →",
+                        key=f"view_{submission['id']}",
+                        use_container_width=True
+                    ):
+
+                        st.session_state.selected_submission = submission["id"]
+
+                        st.session_state.corruption_test = False
+
+                        st.rerun()
+
+
+    # ========================================================
+    # REPORT
+    # ========================================================
+
+    if len(st.session_state.submissions) > 0:
+
+        st.markdown("")
+
+        st.markdown(
+            '<div class="section-title" style="font-size:22px;">'
+            'Verification Report'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div class="section-subtitle">'
+            'Download a CSV record of all assignment integrity checks.'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        csv_data = generate_csv()
 
         st.download_button(
-            "⬇️ Download Verification Report",
-            data=make_csv(report_data),
-            file_name=(
-                selected["submission_id"]
-                + "_crc32_report.csv"
-            ),
+            label="⬇ Download CSV Report",
+            data=csv_data,
+            file_name="assignment_integrity_report.csv",
             mime="text/csv",
-            use_container_width=True,
-            key=(
-                "download_"
-                + selected["submission_id"]
-            )
+            use_container_width=False
         )
 
 
@@ -1137,11 +1282,8 @@ else:
 # FOOTER
 # ============================================================
 
-st.markdown(
-    """
-    <div class="footer">
-        Assignment Integrity Hub • CRC-32 based integrity detection
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="footer">
+    Assignment Integrity Hub · CRC-32 Based File Integrity Verification
+</div>
+""", unsafe_allow_html=True)
