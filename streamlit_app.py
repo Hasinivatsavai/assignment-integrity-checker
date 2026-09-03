@@ -41,8 +41,6 @@ def generate_report():
         "Submission ID",
         "Student Name",
         "Student ID",
-        "Course",
-        "Assignment",
         "File Name",
         "Original CRC-32",
         "Received CRC-32",
@@ -56,8 +54,6 @@ def generate_report():
             submission["id"],
             submission["student_name"],
             submission["student_id"],
-            submission["course"],
-            submission["assignment"],
             submission["file_name"],
             submission["original_crc"],
             submission["received_crc"],
@@ -165,14 +161,22 @@ with student_tab:
         info_col1, info_col2 = st.columns(2)
 
         with info_col1:
-            st.write(f"**Student:** {last_submission['student_name']}")
-            st.write(f"**Student ID:** {last_submission['student_id']}")
-            st.write(f"**Course:** {last_submission['course']}")
+            st.write(
+                f"**Student:** {last_submission['student_name']}"
+            )
+
+            st.write(
+                f"**Student ID:** {last_submission['student_id']}"
+            )
 
         with info_col2:
-            st.write(f"**Assignment:** {last_submission['assignment']}")
-            st.write(f"**File:** {last_submission['file_name']}")
-            st.write(f"**Submitted:** {last_submission['submitted_at']}")
+            st.write(
+                f"**File:** {last_submission['file_name']}"
+            )
+
+            st.write(
+                f"**Submitted:** {last_submission['submitted_at']}"
+            )
 
         st.divider()
 
@@ -262,17 +266,7 @@ with student_tab:
 
         student_id = st.text_input(
             "Student ID",
-            placeholder="Enter your student ID"
-        )
-
-        course = st.text_input(
-            "Course",
-            placeholder="Example: Computer Science"
-        )
-
-        assignment = st.text_input(
-            "Assignment",
-            placeholder="Example: Assignment 4 - Data Structures"
+            placeholder="Enter your Student ID"
         )
 
         st.write("")
@@ -294,19 +288,22 @@ with student_tab:
         ):
 
             if not student_name:
-                st.error("Please enter your name.")
+
+                st.error(
+                    "Please enter your name."
+                )
 
             elif not student_id:
-                st.error("Please enter your Student ID.")
 
-            elif not course:
-                st.error("Please enter your course.")
-
-            elif not assignment:
-                st.error("Please enter the assignment name.")
+                st.error(
+                    "Please enter your Student ID."
+                )
 
             elif uploaded_file is None:
-                st.error("Please upload your assignment.")
+
+                st.error(
+                    "Please upload your assignment."
+                )
 
             else:
 
@@ -332,10 +329,6 @@ with student_tab:
                     "student_name": student_name,
 
                     "student_id": student_id,
-
-                    "course": course,
-
-                    "assignment": assignment,
 
                     "file_name": uploaded_file.name,
 
@@ -411,16 +404,28 @@ with lecturer_tab:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric("Total Submissions", total)
+        st.metric(
+            "Total Submissions",
+            total
+        )
 
     with col2:
-        st.metric("Pending", pending)
+        st.metric(
+            "Pending",
+            pending
+        )
 
     with col3:
-        st.metric("Verified", verified)
+        st.metric(
+            "Verified",
+            verified
+        )
 
     with col4:
-        st.metric("Integrity Failed", failed)
+        st.metric(
+            "Integrity Failed",
+            failed
+        )
 
     st.divider()
 
@@ -454,7 +459,7 @@ with lecturer_tab:
                     with left:
 
                         st.write(
-                            f"### {submission['assignment']}"
+                            f"### {submission['file_name']}"
                         )
 
                         st.write(
@@ -469,10 +474,6 @@ with lecturer_tab:
 
                         st.write(
                             f"📄 **{submission['file_name']}**"
-                        )
-
-                        st.write(
-                            f"📚 {submission['course']}"
                         )
 
                         st.write(
@@ -499,6 +500,7 @@ with lecturer_tab:
                         ):
 
                             st.session_state.selected_submission = index
+
                             st.rerun()
 
 
@@ -512,9 +514,12 @@ with lecturer_tab:
 
         submission = st.session_state.submissions[index]
 
-        if st.button("← Back to Submission Inbox"):
+        if st.button(
+            "← Back to Submission Inbox"
+        ):
 
             st.session_state.selected_submission = None
+
             st.rerun()
 
         st.divider()
@@ -537,15 +542,7 @@ with lecturer_tab:
                 f"**Student ID:** {submission['student_id']}"
             )
 
-            st.write(
-                f"**Course:** {submission['course']}"
-            )
-
         with col2:
-
-            st.write(
-                f"**Assignment:** {submission['assignment']}"
-            )
 
             st.write(
                 f"**File Name:** {submission['file_name']}"
@@ -685,7 +682,7 @@ with lecturer_tab:
 
 
         # ====================================================
-        # TECHNICAL DEMONSTRATION
+        # TRANSMISSION STATUS
         # ====================================================
 
         st.subheader("🧪 Transmission Status")
